@@ -40,9 +40,13 @@ func playerGo() {
 	fmt.Println("pick a square: ")
 	fmt.Scanln(&input)
 	if sq, valid := boardMap[input]; valid {
+		if sq.val == playerChar || sq.val == compChar {
+			fmt.Printf("%v is already taken!\n", input)
+			playerGo()
+		}
 		sq.val = playerChar
 	} else {
-		fmt.Println("?")
+		fmt.Printf("%v is not a valid square!\n", input)
 		playerGo()
 	}
 }

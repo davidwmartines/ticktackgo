@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
+	"time"
 )
 
 const size int = 3
@@ -58,12 +60,28 @@ func computerGo() {
 		for col := 0; col < size; col++ {
 			sq := board[row][col]
 			if sq.val != playerChar && sq.val != compChar {
-				sq.val = compChar
-				went = true
-				break
+				// sq.val = compChar
+				// went = true
+				// break
 			}
 		}
 		if went {
+			break
+		}
+	}
+	if !went {
+		computerGoFirst()
+	}
+}
+
+func computerGoFirst() {
+	seed := rand.NewSource(time.Now().UnixNano())
+	gen := rand.New(seed)
+	for true {
+		randomNumber := gen.Intn((size*size)-1) + 1
+		possibleSquare := boardMap[strconv.Itoa(randomNumber)]
+		if possibleSquare.val != compChar && possibleSquare.val != playerChar {
+			possibleSquare.val = compChar
 			break
 		}
 	}

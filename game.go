@@ -28,6 +28,7 @@ func main() {
 
 	for !winner {
 		playerGo()
+		drawBoard()
 		computerGo()
 		drawBoard()
 		checkWinner()
@@ -35,7 +36,6 @@ func main() {
 }
 
 func playerGo() {
-
 	var input string
 	fmt.Println("pick a square: ")
 	fmt.Scanln(&input)
@@ -48,7 +48,21 @@ func playerGo() {
 }
 
 func computerGo() {
-
+	fmt.Println("computer turn...")
+	went := false
+	for row := 0; row < size; row++ {
+		for col := 0; col < size; col++ {
+			sq := board[row][col]
+			if sq.val != playerChar && sq.val != compChar {
+				sq.val = compChar
+				went = true
+				break
+			}
+		}
+		if went {
+			break
+		}
+	}
 }
 
 func checkWinner() {

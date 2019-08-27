@@ -61,17 +61,14 @@ func playerGo() {
 func computerGo() {
 	fmt.Println("computer turn...")
 	went := false
-	for row := 0; row < size; row++ {
-		for col := 0; col < size; col++ {
-			sq := board[row][col]
-			if sq.val != playerChar && sq.val != compChar {
+	for _, sq := range boardMap {
+		if sq.val != playerChar && sq.val != compChar {
 
-				//TODO: see if sq could be a winning sequence
+			//TODO: see if sq could be a winning sequence
 
-				// sq.val = compChar
-				// went = true
-				// break
-			}
+			// sq.val = compChar
+			// went = true
+			// break
 		}
 		if went {
 			break
@@ -96,21 +93,19 @@ func computerGoFirst() {
 }
 
 func checkWinner() {
-	for row := 0; row < size; row++ {
-		for col := 0; col < size; col++ {
-			sq := board[row][col]
-			if sq.val == playerChar || sq.val == compChar {
-				nex := getAdjacentMatch(sq)
-				if nex != nil {
-					last := getInlineMatch(sq, nex)
-					if last != nil {
-						fmt.Printf("%v WINS!\n", sq.val)
-						os.Exit(0)
-					}
+	for _, sq := range boardMap {
+		if sq.val == playerChar || sq.val == compChar {
+			nex := getAdjacentMatch(sq)
+			if nex != nil {
+				last := getInlineMatch(sq, nex)
+				if last != nil {
+					fmt.Printf("%v WINS!\n", sq.val)
+					os.Exit(0)
 				}
 			}
 		}
 	}
+
 	checkTie()
 }
 

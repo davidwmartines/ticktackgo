@@ -104,12 +104,27 @@ func checkWinner() {
 				if nex != nil {
 					last := getInlineMatch(sq, nex)
 					if last != nil {
-						fmt.Printf("%v WINS!", sq.val)
+						fmt.Printf("%v WINS!\n", sq.val)
 						os.Exit(0)
 					}
 				}
 			}
 		}
+	}
+	checkTie()
+}
+
+func checkTie() {
+	empty := false
+	for _, sq := range boardMap {
+		if sq.val != compChar && sq.val != playerChar {
+			empty = true
+			break
+		}
+	}
+	if !empty {
+		fmt.Println("no winner")
+		os.Exit(0)
 	}
 }
 
@@ -127,7 +142,7 @@ func getInlineMatch(prev *square, sq *square) *square {
 	neighbors := getNeighbors(float64(sq.row), float64(sq.col))
 	for _, n := range neighbors {
 		if n.id != prev.id {
-			if n.row == sq.row || n.col == sq.col {
+			if (n.row == sq.row && n.row == prev.row) || (n.col == sq.col && n.col == prev.col) {
 				if n.val == sq.val {
 					return n
 				}

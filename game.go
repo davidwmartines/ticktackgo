@@ -58,7 +58,11 @@ func playerGo() {
 
 func computerGo() {
 	fmt.Println("computer turn...")
-	went := false
+	choice := getNextSquareForComputer()
+	choice.val = compChar
+}
+
+func getNextSquareForComputer() *square {
 	for _, sq := range boardMap {
 
 		// if square is owned, try getting a neighbor
@@ -66,31 +70,22 @@ func computerGo() {
 			neighbors := getNeighbors(float64(sq.row), float64(sq.col))
 			for _, n := range neighbors {
 				if n.val != playerChar && n.val != compChar {
-					n.val = compChar
-					went = true
-					break
+					return n
 				}
 			}
 		}
-
-		if went {
-			break
-		}
 	}
-	if !went {
-		computerGoFirst()
-	}
+	return getRandomEmptySquare()
 }
 
-func computerGoFirst() {
+func getRandomEmptySquare() *square {
 	seed := rand.NewSource(time.Now().UnixNano())
 	gen := rand.New(seed)
 	for {
 		randomNumber := gen.Intn((size*size)-1) + 1
 		possibleSquare := boardMap[strconv.Itoa(randomNumber)]
 		if possibleSquare.val != compChar && possibleSquare.val != playerChar {
-			possibleSquare.val = compChar
-			break
+			return possibleSquare
 		}
 	}
 }

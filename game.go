@@ -60,14 +60,19 @@ func computerGo() {
 	fmt.Println("computer turn...")
 	went := false
 	for _, sq := range boardMap {
-		if sq.val != playerChar && sq.val != compChar {
 
-			//TODO: see if sq could be a winning sequence
-
-			// sq.val = compChar
-			// went = true
-			// break
+		// if square is owned, try getting a neighbor
+		if sq.val == compChar {
+			neighbors := getNeighbors(float64(sq.row), float64(sq.col))
+			for _, n := range neighbors {
+				if n.val != playerChar && n.val != compChar {
+					n.val = compChar
+					went = true
+					break
+				}
+			}
 		}
+
 		if went {
 			break
 		}

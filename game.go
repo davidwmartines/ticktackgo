@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"os"
 	"strconv"
 	"time"
 )
@@ -17,6 +18,7 @@ type square struct {
 	row int
 	col int
 	val string
+	id  int
 }
 
 var board [size][size]*square
@@ -89,7 +91,45 @@ func computerGoFirst() {
 }
 
 func checkWinner() {
+	for row := 0; row < size; row++ {
+		for col := 0; col < size; col++ {
+			sq := board[row][col]
+			if sq.val == playerChar || sq.val == compChar {
+				nex := getAdjacentMatch(sq)
+				if nex != nil {
+					last := getInlineMatch(sq, nex)
+					if last != nil {
+						fmt.Printf("%v WINS!", sq.val)
+						os.Exit(0)
+					}
+				}
+			}
+		}
+	}
+}
 
+func getAdjacentMatch(sq *square) *square {
+	neighbors := getNeighbors(float64(sq.row), float64(sq.col))
+	for _, n := range neighbors {
+		if n.val == sq.val {
+			return n
+		}
+	}
+	return nil
+}
+
+func getInlineMatch(prev *square, sq *square) *square {
+	neighbors := getNeighbors(float64(sq.row), float64(sq.col))
+	for _, n := range neighbors {
+		if n.id != prev.id {
+			if n.row == sq.row || n.col == sq.col {
+				if n.val == sq.val {
+					return n
+				}
+			}
+		}
+	}
+	return nil
 }
 
 func getNeighbors(row float64, col float64) []*square {
@@ -113,7 +153,7 @@ func initializeBoard() {
 		for col := 0; col < size; col++ {
 			number++
 			numberVal := strconv.Itoa(number)
-			sq := square{row, col, numberVal}
+			sq := square{row, col, numberVal, number}
 			board[row][col] = &sq
 			boardMap[numberVal] = &sq
 		}

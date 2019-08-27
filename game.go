@@ -24,14 +24,12 @@ type square struct {
 var board [size][size]*square
 var boardMap map[string]*square
 
-var winner = false
-
 func main() {
 
 	initializeBoard()
 	drawBoard()
 
-	for !winner {
+	for {
 		playerGo()
 		drawBoard()
 		checkWinner()

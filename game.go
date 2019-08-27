@@ -93,34 +93,40 @@ func computerGoFirst() {
 }
 
 func checkWinner() {
+	if testWinner(playerChar) {
+		fmt.Println("You Win!")
+		os.Exit(0)
+	} else if testWinner(compChar) {
+		fmt.Println("Computer Wins!")
+		os.Exit(0)
+	} else if tieState() {
+		fmt.Println("no winner")
+		os.Exit(0)
+	}
+}
+
+func testWinner(char string) bool {
 	for _, sq := range boardMap {
-		if sq.val == playerChar || sq.val == compChar {
+		if sq.val == char {
 			nex := getAdjacentMatch(sq)
 			if nex != nil {
 				last := getInlineMatch(sq, nex)
 				if last != nil {
-					fmt.Printf("%v WINS!\n", sq.val)
-					os.Exit(0)
+					return true
 				}
 			}
 		}
 	}
-
-	checkTie()
+	return false
 }
 
-func checkTie() {
-	empty := false
+func tieState() bool {
 	for _, sq := range boardMap {
 		if sq.val != compChar && sq.val != playerChar {
-			empty = true
-			break
+			return false
 		}
 	}
-	if !empty {
-		fmt.Println("no winner")
-		os.Exit(0)
-	}
+	return true
 }
 
 func getAdjacentMatch(sq *square) *square {

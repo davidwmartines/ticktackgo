@@ -95,19 +95,19 @@ func getRandomEmptySquare() *square {
 }
 
 func checkWinner() {
-	if testWinner(playerChar) {
+	if isWinner(playerChar) {
 		fmt.Println("You Win!")
 		os.Exit(0)
-	} else if testWinner(compChar) {
+	} else if isWinner(compChar) {
 		fmt.Println("Computer Wins!")
 		os.Exit(0)
-	} else if tieState() {
+	} else if isTie() {
 		fmt.Println("no winner")
 		os.Exit(0)
 	}
 }
 
-func testWinner(char string) bool {
+func isWinner(char string) bool {
 	for _, sq := range boardMap {
 		if sq.val == char {
 			nex := getAdjacentMatch(sq)
@@ -122,7 +122,7 @@ func testWinner(char string) bool {
 	return false
 }
 
-func tieState() bool {
+func isTie() bool {
 	for _, sq := range boardMap {
 		if isEmpty(sq) {
 			return false

@@ -69,7 +69,7 @@ func getNextSquareForComputer() *square {
 		if sq.val == compChar {
 			neighbors := getNeighbors(float64(sq.row), float64(sq.col))
 			for _, n := range neighbors {
-				if n.val != playerChar && n.val != compChar {
+				if isEmpty(n) {
 					return n
 				}
 			}
@@ -78,13 +78,17 @@ func getNextSquareForComputer() *square {
 	return getRandomEmptySquare()
 }
 
+func isEmpty(sq *square) bool {
+	return sq.val != compChar && sq.val != playerChar
+}
+
 func getRandomEmptySquare() *square {
 	seed := rand.NewSource(time.Now().UnixNano())
 	gen := rand.New(seed)
 	for {
 		randomNumber := gen.Intn((size*size)-1) + 1
 		possibleSquare := boardMap[strconv.Itoa(randomNumber)]
-		if possibleSquare.val != compChar && possibleSquare.val != playerChar {
+		if isEmpty(possibleSquare) {
 			return possibleSquare
 		}
 	}
@@ -120,7 +124,7 @@ func testWinner(char string) bool {
 
 func tieState() bool {
 	for _, sq := range boardMap {
-		if sq.val != compChar && sq.val != playerChar {
+		if isEmpty(sq) {
 			return false
 		}
 	}

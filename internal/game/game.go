@@ -2,7 +2,6 @@ package game
 
 import (
 	"fmt"
-	"math"
 	"math/rand"
 	"os"
 	"strconv"
@@ -68,7 +67,7 @@ func getNextSquareForComputer() *square {
 
 		// if square is owned, try getting a neighbor
 		if sq.val == compChar {
-			neighbors := getNeighbors(float64(sq.row), float64(sq.col))
+			neighbors := neighbors(float64(sq.row), float64(sq.col))
 			for _, n := range neighbors {
 				if isEmpty(n) {
 					return n
@@ -133,7 +132,7 @@ func isTie() bool {
 }
 
 func getAdjacentMatch(sq *square) *square {
-	neighbors := getNeighbors(float64(sq.row), float64(sq.col))
+	neighbors := neighbors(float64(sq.row), float64(sq.col))
 	for _, n := range neighbors {
 		if n.val == sq.val {
 			return n
@@ -143,7 +142,7 @@ func getAdjacentMatch(sq *square) *square {
 }
 
 func getInlineMatch(prev *square, sq *square) *square {
-	neighbors := getNeighbors(float64(sq.row), float64(sq.col))
+	neighbors := neighbors(float64(sq.row), float64(sq.col))
 	for _, n := range neighbors {
 		if n.id != prev.id {
 			if (n.row == sq.row && n.row == prev.row) || (n.col == sq.col && n.col == prev.col) {
@@ -154,20 +153,6 @@ func getInlineMatch(prev *square, sq *square) *square {
 		}
 	}
 	return nil
-}
-
-func getNeighbors(row float64, col float64) []*square {
-	var output []*square
-	limit := float64(size - 1)
-	for x := math.Max(0, row-1); x <= math.Min(row+1, limit); x++ {
-		for y := math.Max(0, col-1); y <= math.Min(col+1, limit); y++ {
-			if x != row || y != col {
-				sq := board[int(x)][int(y)]
-				output = append(output, sq)
-			}
-		}
-	}
-	return output
 }
 
 func initializeBoard() {

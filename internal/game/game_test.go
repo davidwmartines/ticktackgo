@@ -3,8 +3,13 @@ package game
 import (
 	"testing"
 
+	"github.com/davidwmartines/ticktackgo/internal/constants"
+
 	"github.com/stretchr/testify/assert"
 )
+
+const playerChar string = constants.PlayerChar
+const compChar string = constants.CompChar
 
 func place(squareID, char string) {
 	s, _ := gameBoard.Square(squareID)

@@ -75,8 +75,27 @@ func computerGo() {
 
 func getNextSquareForComputer() *board.Square {
 
+	var next *board.Square
+
+	//first, block opponent from winning
+	//TODO
+
+	//next see if I can win in this move
+	//TODO
+
+	//next just try to start a run from an occupied square
+	next = getNextFromOccupied()
+	if next != nil {
+		return next
+	}
+
+	//lastly, if this is the first turn, pick at random
+	return getRandomEmptySquare()
+}
+
+func getNextFromOccupied() *board.Square {
+	// if square is occupied, try getting a neighbor
 	for _, sq := range gameBoard.Squares() {
-		// if square is owned, try getting a neighbor
 		if sq.Value == constants.CompChar {
 			for _, n := range gameBoard.Neighbors(sq) {
 				if n.IsEmpty() {
@@ -85,7 +104,7 @@ func getNextSquareForComputer() *board.Square {
 			}
 		}
 	}
-	return getRandomEmptySquare()
+	return nil
 }
 
 func getRandomEmptySquare() *board.Square {

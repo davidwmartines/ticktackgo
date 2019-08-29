@@ -2,6 +2,8 @@ package constants
 
 import "time"
 
+// All of these are constants (for now)...
+
 //Size is the Board size.
 const Size int = 3
 

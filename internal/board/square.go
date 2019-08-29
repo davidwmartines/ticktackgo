@@ -13,3 +13,13 @@ type Square struct {
 func (square *Square) IsEmpty() bool {
 	return square.Value == square.ID
 }
+
+//RowMatch returns true if the the squares on on the same row.
+func (square *Square) RowMatch(other *Square) bool {
+	return square.Point.Row == other.Point.Row
+}
+
+//ColMatch returns true if the the squares on on the same column.
+func (square *Square) ColMatch(other *Square) bool {
+	return square.Point.Col == other.Point.Col
+}

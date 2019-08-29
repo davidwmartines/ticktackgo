@@ -3,6 +3,7 @@ package game2
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"strconv"
 	"time"
 
@@ -19,7 +20,7 @@ const compChar string = "O"
 //Start begins a new game.
 func Start() {
 
-	gameBoard = board.New(3)
+	initializeBoard()
 
 	gameBoard.Draw()
 
@@ -35,6 +36,10 @@ func Start() {
 
 }
 
+func initializeBoard() {
+	gameBoard = board.New(3)
+}
+
 func playerGo() {
 	var input string
 	fmt.Println("pick a square: ")
@@ -43,8 +48,9 @@ func playerGo() {
 		if !sq.IsEmpty() {
 			fmt.Printf("%v is already taken!\n", input)
 			playerGo()
+		} else {
+			sq.Value = playerChar
 		}
-		sq.Value = playerChar
 	} else {
 		fmt.Printf("%v is not a valid square!\n", input)
 		playerGo()
@@ -52,7 +58,16 @@ func playerGo() {
 }
 
 func checkWinner() {
-
+	if isWinner(playerChar) {
+		fmt.Println("You Win!")
+		os.Exit(0)
+	} else if isWinner(compChar) {
+		fmt.Println("Computer Wins!")
+		os.Exit(0)
+	} else if isTie() {
+		fmt.Println("no winner")
+		os.Exit(0)
+	}
 }
 
 func computerGo() {
@@ -86,4 +101,50 @@ func getRandomEmptySquare() *board.Square {
 			return possibleSquare
 		}
 	}
+}
+
+func isWinner(char string) bool {
+	for _, sq := range gameBoard.Squares() {
+		if sq.Value == char {
+			nex := getAdjacentMatch(sq)
+			if nex != nil {
+				last := getInlineMatch(sq, nex)
+				if last != nil {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func isTie() bool {
+	for _, sq := range gameBoard.Squares() {
+		if sq.IsEmpty() {
+			return false
+		}
+	}
+	return true
+}
+
+func getAdjacentMatch(sq *board.Square) *board.Square {
+	for _, n := range gameBoard.Neighbors(sq) {
+		if n.Value == sq.Value {
+			return n
+		}
+	}
+	return nil
+}
+
+func getInlineMatch(prev *board.Square, sq *board.Square) *board.Square {
+	for _, n := range gameBoard.Neighbors(sq) {
+		if n.ID != prev.ID {
+			if (n.RowMatch(sq) && n.RowMatch(prev)) || (n.ColMatch(sq) && n.ColMatch(prev)) {
+				if n.Value == sq.Value {
+					return n
+				}
+			}
+		}
+	}
+	return nil
 }

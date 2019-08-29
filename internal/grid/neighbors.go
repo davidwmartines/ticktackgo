@@ -4,8 +4,8 @@ import "math"
 
 // Neighbors gets the adjacent points to a point.
 func (source Grid) Neighbors(point *Point) (output []*Point) {
-	row := float64(point.row)
-	col := float64(point.col)
+	row := float64(point.Row)
+	col := float64(point.Col)
 	xLimit := float64(len(source) - 1)
 	for x := math.Max(0, row-1); x <= math.Min(row+1, xLimit); x++ {
 		yLimit := float64(len(source[int(x)]) - 1)

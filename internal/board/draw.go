@@ -1,6 +1,9 @@
 package board
 
-import "github.com/buger/goterm"
+import (
+	"github.com/buger/goterm"
+	"github.com/davidwmartines/ticktackgo/internal/constants"
+)
 
 //Draw renders the board using goterm.
 func (board *Board) Draw() {
@@ -11,7 +14,7 @@ func (board *Board) Draw() {
 			val := square.Value
 			if square.IsEmpty() {
 				val = goterm.Color(val, goterm.WHITE)
-			} else if val == "X" {
+			} else if val == constants.PlayerChar {
 				val = goterm.Color(val, goterm.GREEN)
 			} else {
 				val = goterm.Color(val, goterm.RED)

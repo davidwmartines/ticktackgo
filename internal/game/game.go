@@ -8,16 +8,10 @@ import (
 	"time"
 
 	"github.com/davidwmartines/ticktackgo/internal/board"
+	"github.com/davidwmartines/ticktackgo/internal/constants"
 )
 
 var gameBoard board.Board
-
-const size int = 3
-
-const playerChar string = "X"
-const compChar string = "O"
-
-const thinkTime time.Duration = 1
 
 //Start begins a new game.
 func Start() {
@@ -39,7 +33,7 @@ func Start() {
 }
 
 func initializeBoard() {
-	gameBoard = board.New(3)
+	gameBoard = board.New(constants.Size)
 }
 
 func playerGo() {
@@ -51,7 +45,7 @@ func playerGo() {
 			fmt.Printf("%v is already taken!\n", input)
 			playerGo()
 		} else {
-			sq.Value = playerChar
+			sq.Value = constants.PlayerChar
 		}
 	} else {
 		fmt.Printf("%v is not a valid square!\n", input)
@@ -60,10 +54,10 @@ func playerGo() {
 }
 
 func checkWinner() {
-	if isWinner(playerChar) {
+	if isWinner(constants.PlayerChar) {
 		fmt.Println("You Win!")
 		os.Exit(0)
-	} else if isWinner(compChar) {
+	} else if isWinner(constants.CompChar) {
 		fmt.Println("Computer Wins!")
 		os.Exit(0)
 	} else if isTie() {
@@ -74,16 +68,16 @@ func checkWinner() {
 
 func computerGo() {
 	fmt.Println("My turn...")
-	time.Sleep(time.Second * thinkTime)
+	time.Sleep(time.Second * constants.ThinkTime)
 	choice := getNextSquareForComputer()
-	choice.Value = compChar
+	choice.Value = constants.CompChar
 }
 
 func getNextSquareForComputer() *board.Square {
 
 	for _, sq := range gameBoard.Squares() {
 		// if square is owned, try getting a neighbor
-		if sq.Value == compChar {
+		if sq.Value == constants.CompChar {
 			for _, n := range gameBoard.Neighbors(sq) {
 				if n.IsEmpty() {
 					return n
@@ -98,7 +92,7 @@ func getRandomEmptySquare() *board.Square {
 	seed := rand.NewSource(time.Now().UnixNano())
 	gen := rand.New(seed)
 	for {
-		randomNumber := gen.Intn((size*size)-1) + 1
+		randomNumber := gen.Intn((constants.Size*constants.Size)-1) + 1
 		possibleSquare, _ := gameBoard.Square(strconv.Itoa(randomNumber))
 		if possibleSquare.IsEmpty() {
 			return possibleSquare

@@ -8,3 +8,8 @@ type Square struct {
 	id    string
 	value string
 }
+
+// IsEmpty returns true if the square does not yet contain a player piece.
+func (square *Square) IsEmpty() bool {
+	return square.value != square.id
+}

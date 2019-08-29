@@ -111,3 +111,25 @@ func TestIsWinnerBend2(t *testing.T) {
 	assert.False(t, isWinner(playerChar), "should be no winner")
 	assert.False(t, isWinner(compChar), "should be no winner")
 }
+
+func TestIsWinnerDifferntPlayersStraight(t *testing.T) {
+	initializeBoard()
+
+	place("1", playerChar)
+	place("2", playerChar)
+	place("3", compChar)
+
+	assert.False(t, isWinner(playerChar), "playerChar should not be winner")
+	assert.False(t, isWinner(compChar), "comp should not be winner")
+}
+
+func TestIsWinnerDifferntPlayersDiag(t *testing.T) {
+	initializeBoard()
+
+	place("1", playerChar)
+	place("5", playerChar)
+	place("9", compChar)
+
+	assert.False(t, isWinner(playerChar), "playerChar should not be winner")
+	assert.False(t, isWinner(compChar), "comp should not be winner")
+}

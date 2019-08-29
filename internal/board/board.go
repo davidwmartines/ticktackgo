@@ -12,6 +12,7 @@ type Board struct {
 	grid           grid.Grid
 	squaresByID    map[string]*Square
 	squaresByPoint map[*grid.Point]*Square
+	allSquares     []*Square
 }
 
 // New creates a Board.
@@ -27,6 +28,7 @@ func New(size int) (board Board) {
 			square := Square{point, val, val}
 			board.squaresByID[val] = &square
 			board.squaresByPoint[point] = &square
+			board.allSquares = append(board.allSquares, &square)
 		}
 	}
 	return
@@ -37,8 +39,27 @@ func (board *Board) Draw() {
 	for _, row := range board.grid {
 		rowText := ""
 		for _, point := range row {
-			rowText += " " + board.squaresByPoint[point].value
+			rowText += " " + board.squaresByPoint[point].Value
 		}
 		fmt.Println(rowText)
 	}
+}
+
+//Square gets a square by id.
+func (board *Board) Square(id string) (*Square, bool) {
+	square, ok := board.squaresByID[id]
+	return square, ok
+}
+
+//Squares gets a list of the squares
+func (board *Board) Squares() []*Square {
+	return board.allSquares
+}
+
+// Neighbors gets a list of the square's neighbors
+func (board *Board) Neighbors(source *Square) (neighbors []*Square) {
+	for _, point := range board.grid.Neighbors(source.Point) {
+		neighbors = append(neighbors, board.squaresByPoint[point])
+	}
+	return
 }

@@ -6,91 +6,54 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/davidwmartines/ticktackgo/internal/board"
 )
+
+var gameBoard board.Board
 
 const size int = 3
 
 const playerChar string = "X"
 const compChar string = "O"
 
-type square struct {
-	row int
-	col int
-	val string
-	id  int
-}
-
-var board [size][size]*square
-var boardMap map[string]*square
-
-//Run runs the game.
-func Run() {
+//Start begins a new game.
+func Start() {
 
 	initializeBoard()
-	drawBoard()
+
+	gameBoard.Draw()
 
 	for {
 		playerGo()
-		drawBoard()
+		gameBoard.Draw()
 		checkWinner()
 
 		computerGo()
-		drawBoard()
+		gameBoard.Draw()
 		checkWinner()
 	}
+
+}
+
+func initializeBoard() {
+	gameBoard = board.New(3)
 }
 
 func playerGo() {
 	var input string
 	fmt.Println("pick a square: ")
 	fmt.Scanln(&input)
-	if sq, valid := boardMap[input]; valid {
-		if sq.val == playerChar || sq.val == compChar {
+	if sq, valid := gameBoard.Square(input); valid {
+		if !sq.IsEmpty() {
 			fmt.Printf("%v is already taken!\n", input)
 			playerGo()
+		} else {
+			sq.Value = playerChar
 		}
-		sq.val = playerChar
 	} else {
 		fmt.Printf("%v is not a valid square!\n", input)
 		playerGo()
-	}
-}
-
-func computerGo() {
-	fmt.Println("computer turn...")
-	choice := getNextSquareForComputer()
-	choice.val = compChar
-}
-
-func getNextSquareForComputer() *square {
-	for _, sq := range boardMap {
-
-		// if square is owned, try getting a neighbor
-		if sq.val == compChar {
-			neighbors := neighbors(float64(sq.row), float64(sq.col))
-			for _, n := range neighbors {
-				if isEmpty(n) {
-					return n
-				}
-			}
-		}
-	}
-	return getRandomEmptySquare()
-}
-
-func isEmpty(sq *square) bool {
-	return sq.val != compChar && sq.val != playerChar
-}
-
-func getRandomEmptySquare() *square {
-	seed := rand.NewSource(time.Now().UnixNano())
-	gen := rand.New(seed)
-	for {
-		randomNumber := gen.Intn((size*size)-1) + 1
-		possibleSquare := boardMap[strconv.Itoa(randomNumber)]
-		if isEmpty(possibleSquare) {
-			return possibleSquare
-		}
 	}
 }
 
@@ -107,9 +70,42 @@ func checkWinner() {
 	}
 }
 
+func computerGo() {
+	fmt.Println("computer turn...")
+	choice := getNextSquareForComputer()
+	choice.Value = compChar
+}
+
+func getNextSquareForComputer() *board.Square {
+
+	for _, sq := range gameBoard.Squares() {
+		// if square is owned, try getting a neighbor
+		if sq.Value == compChar {
+			for _, n := range gameBoard.Neighbors(sq) {
+				if n.IsEmpty() {
+					return n
+				}
+			}
+		}
+	}
+	return getRandomEmptySquare()
+}
+
+func getRandomEmptySquare() *board.Square {
+	seed := rand.NewSource(time.Now().UnixNano())
+	gen := rand.New(seed)
+	for {
+		randomNumber := gen.Intn((size*size)-1) + 1
+		possibleSquare, _ := gameBoard.Square(strconv.Itoa(randomNumber))
+		if possibleSquare.IsEmpty() {
+			return possibleSquare
+		}
+	}
+}
+
 func isWinner(char string) bool {
-	for _, sq := range boardMap {
-		if sq.val == char {
+	for _, sq := range gameBoard.Squares() {
+		if sq.Value == char {
 			nex := getAdjacentMatch(sq)
 			if nex != nil {
 				last := getInlineMatch(sq, nex)
@@ -123,58 +119,32 @@ func isWinner(char string) bool {
 }
 
 func isTie() bool {
-	for _, sq := range boardMap {
-		if isEmpty(sq) {
+	for _, sq := range gameBoard.Squares() {
+		if sq.IsEmpty() {
 			return false
 		}
 	}
 	return true
 }
 
-func getAdjacentMatch(sq *square) *square {
-	neighbors := neighbors(float64(sq.row), float64(sq.col))
-	for _, n := range neighbors {
-		if n.val == sq.val {
+func getAdjacentMatch(sq *board.Square) *board.Square {
+	for _, n := range gameBoard.Neighbors(sq) {
+		if n.Value == sq.Value {
 			return n
 		}
 	}
 	return nil
 }
 
-func getInlineMatch(prev *square, sq *square) *square {
-	neighbors := neighbors(float64(sq.row), float64(sq.col))
-	for _, n := range neighbors {
-		if n.id != prev.id {
-			if (n.row == sq.row && n.row == prev.row) || (n.col == sq.col && n.col == prev.col) {
-				if n.val == sq.val {
+func getInlineMatch(prev *board.Square, sq *board.Square) *board.Square {
+	for _, n := range gameBoard.Neighbors(sq) {
+		if n.ID != prev.ID {
+			if (n.RowMatch(sq) && n.RowMatch(prev)) || (n.ColMatch(sq) && n.ColMatch(prev)) {
+				if n.Value == sq.Value {
 					return n
 				}
 			}
 		}
 	}
 	return nil
-}
-
-func initializeBoard() {
-	boardMap = make(map[string]*square)
-	number := 0
-	for row := 0; row < size; row++ {
-		for col := 0; col < size; col++ {
-			number++
-			numberVal := strconv.Itoa(number)
-			sq := square{row, col, numberVal, number}
-			board[row][col] = &sq
-			boardMap[numberVal] = &sq
-		}
-	}
-}
-
-func drawBoard() {
-	for row := 0; row < size; row++ {
-		rowText := ""
-		for col := 0; col < size; col++ {
-			rowText += " " + board[row][col].val
-		}
-		fmt.Println(rowText)
-	}
 }

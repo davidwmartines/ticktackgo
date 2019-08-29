@@ -1,7 +1,7 @@
 package main
 
-import "github.com/davidwmartines/ticktackgo/internal/game2"
+import "github.com/davidwmartines/ticktackgo/internal/game"
 
 func main() {
-	game2.Start()
+	game.Start()
 }

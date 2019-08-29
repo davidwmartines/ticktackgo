@@ -2,101 +2,79 @@ package game
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
+func place(squareID, char string) {
+	s, _ := gameBoard.Square(squareID)
+	s.Value = char
+}
 func TestIsWinnerEmpty(t *testing.T) {
 	initializeBoard()
-	if isWinner(playerChar) {
-		t.Errorf("should be no winner")
-	}
-	if isWinner(compChar) {
-		t.Errorf("should be no winner")
-	}
+
+	assert.False(t, isWinner(playerChar), "should be no winner")
+	assert.False(t, isWinner(compChar), "should be no winner")
 }
 
 func TestIsWinnerOneSquare(t *testing.T) {
 	initializeBoard()
 
-	boardMap["1"].val = playerChar
-
-	if isWinner(playerChar) {
-		t.Errorf("should be no winner")
-	}
-	if isWinner(compChar) {
-		t.Errorf("should be no winner")
-	}
+	place("1", playerChar)
+	assert.False(t, isWinner(playerChar), "should be no winner")
+	assert.False(t, isWinner(compChar), "should be no winner")
 }
 
 func TestIsWinnerTwoSquares(t *testing.T) {
 	initializeBoard()
 
-	boardMap["1"].val = playerChar
-	boardMap["2"].val = playerChar
+	place("1", playerChar)
+	place("2", playerChar)
 
-	if isWinner(playerChar) {
-		t.Errorf("should be no winner")
-	}
-	if isWinner(compChar) {
-		t.Errorf("should be no winner")
-	}
+	assert.False(t, isWinner(playerChar), "should be no winner")
+	assert.False(t, isWinner(compChar), "should be no winner")
 }
 
 func TestIsWinnerThreeNotInRow(t *testing.T) {
 	initializeBoard()
 
-	boardMap["1"].val = playerChar
-	boardMap["2"].val = playerChar
-	boardMap["4"].val = playerChar
+	place("1", playerChar)
+	place("2", playerChar)
+	place("4", playerChar)
 
-	if isWinner(playerChar) {
-		t.Errorf("should be no winner")
-	}
-	if isWinner(compChar) {
-		t.Errorf("should be no winner")
-	}
+	assert.False(t, isWinner(playerChar), "should be no winner")
+	assert.False(t, isWinner(compChar), "should be no winner")
 }
 
 func TestIsWinnerTopRow(t *testing.T) {
 	initializeBoard()
 
-	boardMap["1"].val = playerChar
-	boardMap["2"].val = playerChar
-	boardMap["3"].val = playerChar
+	place("1", playerChar)
+	place("2", playerChar)
+	place("3", playerChar)
 
-	if !isWinner(playerChar) {
-		t.Errorf("player should be winner")
-	}
-	if isWinner(compChar) {
-		t.Errorf("comp should not be winner")
-	}
+	assert.True(t, isWinner(playerChar), "playerChar should be winner")
+	assert.False(t, isWinner(compChar), "comp should not be winner")
 }
 
 func TestIsWinnerFirstCol(t *testing.T) {
 	initializeBoard()
 
-	boardMap["1"].val = playerChar
-	boardMap["4"].val = playerChar
-	boardMap["7"].val = playerChar
+	place("1", playerChar)
+	place("4", playerChar)
+	place("7", playerChar)
 
-	if !isWinner(playerChar) {
-		t.Errorf("player should be winner")
-	}
-	if isWinner(compChar) {
-		t.Errorf("comp should not be winner")
-	}
+	assert.True(t, isWinner(playerChar), "playerChar should be winner")
+	assert.False(t, isWinner(compChar), "comp should not be winner")
 }
 
 func TestIsWinnerDiagonal(t *testing.T) {
 	initializeBoard()
 
-	boardMap["1"].val = playerChar
-	boardMap["5"].val = playerChar
-	boardMap["9"].val = playerChar
+	place("1", playerChar)
+	place("5", playerChar)
+	place("9", playerChar)
 
-	if !isWinner(playerChar) {
-		t.Errorf("player should be winner")
-	}
-	if isWinner(compChar) {
-		t.Errorf("comp should not be winner")
-	}
+	assert.True(t, isWinner(playerChar), "playerChar should be winner")
+	assert.False(t, isWinner(compChar), "comp should not be winner")
 }

@@ -35,7 +35,7 @@ func TestIsWinnerTwoSquares(t *testing.T) {
 	assert.False(t, isWinner(compChar), "should be no winner")
 }
 
-func TestIsWinnerThreeNotInRow(t *testing.T) {
+func TestIsWinnerCorner(t *testing.T) {
 	initializeBoard()
 
 	place("1", playerChar)
@@ -77,4 +77,37 @@ func TestIsWinnerDiagonal(t *testing.T) {
 
 	assert.True(t, isWinner(playerChar), "playerChar should be winner")
 	assert.False(t, isWinner(compChar), "comp should not be winner")
+}
+
+func TestIsWinnerDiagonal2(t *testing.T) {
+	initializeBoard()
+
+	place("3", playerChar)
+	place("5", playerChar)
+	place("7", playerChar)
+
+	assert.True(t, isWinner(playerChar), "playerChar should be winner")
+	assert.False(t, isWinner(compChar), "comp should not be winner")
+}
+
+func TestIsWinnerBend(t *testing.T) {
+	initializeBoard()
+
+	place("1", playerChar)
+	place("4", playerChar)
+	place("8", playerChar)
+
+	assert.False(t, isWinner(playerChar), "should be no winner")
+	assert.False(t, isWinner(compChar), "should be no winner")
+}
+
+func TestIsWinnerBend2(t *testing.T) {
+	initializeBoard()
+
+	place("1", playerChar)
+	place("5", playerChar)
+	place("8", playerChar)
+
+	assert.False(t, isWinner(playerChar), "should be no winner")
+	assert.False(t, isWinner(compChar), "should be no winner")
 }

@@ -108,9 +108,15 @@ func isWinner(char string) bool {
 		if sq.Value == char {
 			nex := getAdjacentMatch(sq)
 			if nex != nil {
-				last := getInlineMatch(sq, nex)
-				if last != nil {
+				lineMatch := getInlineMatch(sq, nex)
+				if lineMatch != nil {
 					return true
+				}
+				if !sq.RowMatch(nex) && !sq.ColMatch(nex) {
+					diagMatch := getDiagonalMatch(sq, nex)
+					if diagMatch != nil {
+						return true
+					}
 				}
 			}
 		}
@@ -140,6 +146,19 @@ func getInlineMatch(prev *board.Square, sq *board.Square) *board.Square {
 	for _, n := range gameBoard.Neighbors(sq) {
 		if n.ID != prev.ID {
 			if (n.RowMatch(sq) && n.RowMatch(prev)) || (n.ColMatch(sq) && n.ColMatch(prev)) {
+				if n.Value == sq.Value {
+					return n
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func getDiagonalMatch(prev *board.Square, sq *board.Square) *board.Square {
+	for _, n := range gameBoard.Neighbors(sq) {
+		if n.ID != prev.ID {
+			if !n.RowMatch(prev) && !n.RowMatch(sq) && !n.ColMatch(prev) && !n.ColMatch(sq) {
 				if n.Value == sq.Value {
 					return n
 				}

@@ -34,8 +34,8 @@ func New(size int) (board Board) {
 	return
 }
 
-//Draw renders the board to stdout.
-func (board *Board) Draw() {
+//DrawStdout renders the board to stdout.
+func (board *Board) DrawStdout() {
 	for _, row := range board.grid {
 		rowText := ""
 		for _, point := range row {

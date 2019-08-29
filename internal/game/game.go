@@ -17,20 +17,22 @@ const size int = 3
 const playerChar string = "X"
 const compChar string = "O"
 
+const thinkTime time.Duration = 1
+
 //Start begins a new game.
 func Start() {
 
 	initializeBoard()
 
-	gameBoard.Draw()
+	render(&gameBoard)
 
 	for {
 		playerGo()
-		gameBoard.Draw()
+		render(&gameBoard)
 		checkWinner()
 
 		computerGo()
-		gameBoard.Draw()
+		render(&gameBoard)
 		checkWinner()
 	}
 
@@ -42,7 +44,7 @@ func initializeBoard() {
 
 func playerGo() {
 	var input string
-	fmt.Println("pick a square: ")
+	fmt.Print("Your turn. Pick a square by entering the number: ")
 	fmt.Scanln(&input)
 	if sq, valid := gameBoard.Square(input); valid {
 		if !sq.IsEmpty() {
@@ -71,7 +73,8 @@ func checkWinner() {
 }
 
 func computerGo() {
-	fmt.Println("computer turn...")
+	fmt.Println("My turn...")
+	time.Sleep(time.Second * thinkTime)
 	choice := getNextSquareForComputer()
 	choice.Value = compChar
 }
